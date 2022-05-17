@@ -6,6 +6,8 @@ It builds two versions of the utility, one with jSerialComm 1.3 and other with j
 
 ## Building
 
+Prerequisites: Java 8 or newer
+
 ```shell
 ./gradlew clean app:ver_1_3DistTar app:ver_2_9DistTar
 ```
