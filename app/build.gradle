@@ -1,0 +1,77 @@
+plugins {
+  id 'distribution'
+}
+
+apply plugin: 'java'
+
+repositories {
+  mavenCentral()
+}
+
+configurations {
+  opener1_3
+  opener2_9
+}
+
+jar {
+  archiveBaseName = 'kmtronic-tester-app'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+  implementation project(":port-opener")
+  opener1_3 project(":port-opener-ver1_3")
+  opener2_9 project(":port-opener-ver2_9")
+  compileOnly 'com.fazecast:jSerialComm:2.9.1'
+  compileOnly 'org.slf4j:slf4j-api:1.7.36'
+  runtimeOnly 'org.slf4j:slf4j-simple:1.7.36'
+  testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
+
+distributions {
+  archivesBaseName = 'kmtronic-tester-app'
+  ver_1_3 {
+    contents {
+      into('lib/') {
+        from jar
+        from configurations.runtimeClasspath
+        dirMode = 0755
+        fileMode = 0644
+      }
+      into('lib/') {
+        from jar
+        from configurations.opener1_3
+        dirMode = 0755
+        fileMode = 0644
+      }
+      from('src/main/dist-bin') {
+        fileMode = 0755
+      }
+    }
+  }
+  ver_2_9 {
+    contents {
+      into('lib/') {
+        from jar
+        from configurations.runtimeClasspath
+        dirMode = 0755
+        fileMode = 0644
+      }
+      into('lib/') {
+        from jar
+        from configurations.opener2_9
+        dirMode = 0755
+        fileMode = 0644
+      }
+      from('src/main/dist-bin') {
+        fileMode = 0755
+      }
+    }
+  }
+}
+
+tasks.withType(Tar) {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
