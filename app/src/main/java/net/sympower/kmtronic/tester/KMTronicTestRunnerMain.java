@@ -15,10 +15,10 @@ import java.util.Scanner;
 public class KMTronicTestRunnerMain {
 
   public static final PrintStream OUT = System.out; // NOSONAR
+  private static final String[] PORT_OPENER_CLASS_SUFFIXES_TO_TRY = { "Ver1_3", "Ver2_9" };
 
   public static void main(String[] args) {
     String propertiesFileName = args.length > 0 ? args[0] : "port.properties";
-    String libraryVersion = args.length > 1 ? args[1] : "1.3";
     Scanner input = new Scanner(System.in);
     OUT.println("Plain runner! Type " +
                            "'list' to list serial ports, " +
@@ -41,7 +41,7 @@ public class KMTronicTestRunnerMain {
             properties.load(fis);
             PropertyReader propertyReader = new PropertyReader(properties);
             PortConfig portConfig = new PortConfig(propertyReader);
-            PortOpener portOpener = makePortOpener(libraryVersion);
+            PortOpener portOpener = makePortOpener();
             KMTronicTester reader =
                 new KMTronicTester(new JSerialPortFactory(portOpener), portConfig, propertyReader.getProperty("portName"));
             DeviceStatus deviceStatus = reader.testReadStatus();
@@ -59,20 +59,19 @@ public class KMTronicTestRunnerMain {
     }
   }
 
-  private static PortOpener makePortOpener(String libraryVersion) {
-    String classNameSuffix;
-    if (libraryVersion.startsWith("1")) {
-      classNameSuffix = "Ver1_3";
+  private static PortOpener makePortOpener() {
+    for (String classNameSuffix : PORT_OPENER_CLASS_SUFFIXES_TO_TRY) {
+      try {
+        return (PortOpener) Class.forName(PortOpener.class.getName() + classNameSuffix).newInstance();
+      }
+      catch (ClassNotFoundException e) {
+        // Ignore, this is expected
+      }
+      catch (Exception e) {
+        throw new IllegalStateException(e);
+      }
     }
-    else {
-      classNameSuffix = "Ver2_9";
-    }
-    try {
-      return (PortOpener) Class.forName(PortOpener.class.getName() + classNameSuffix).newInstance();
-    }
-    catch (Exception e) {
-      throw new IllegalStateException(e);
-    }
+    throw new IllegalStateException("No port opener implementation found!");
   }
 
 }
