@@ -49,6 +49,7 @@ distributions {
       from('src/main/dist-bin') {
         fileMode = 0755
       }
+      from('src/main/dist')
     }
   }
   ver_2_9 {
@@ -68,6 +69,7 @@ distributions {
       from('src/main/dist-bin') {
         fileMode = 0755
       }
+      from('src/main/dist')
     }
   }
 }
