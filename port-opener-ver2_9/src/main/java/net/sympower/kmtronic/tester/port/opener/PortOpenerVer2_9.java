@@ -32,6 +32,7 @@ public class PortOpenerVer2_9 implements PortOpener { // NOSONAR
         throw new IllegalArgumentException("Unrecognized parity value: " + config.parity);
     }
     port.setFlowControl(SerialPort.FLOW_CONTROL_DISABLED);
+    port.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING | SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0);
     Rs485ModeParameters rs485ModeParameters = config.rs485ModeParameters;
     if (rs485ModeParameters != null) {
             port.setRs485ModeParameters(
