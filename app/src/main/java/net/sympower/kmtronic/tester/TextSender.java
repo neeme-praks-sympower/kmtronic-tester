@@ -29,6 +29,7 @@ public class TextSender {
         InputStream is = port.openInputStream()
     ) {
       os.write(text.getBytes(StandardCharsets.UTF_8));
+      os.flush();
       byte[] responseBytes = nonBlockingBusyWaitRead(is, timeoutMs);
       return new String(responseBytes, StandardCharsets.UTF_8);
     }

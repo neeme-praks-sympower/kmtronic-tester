@@ -27,6 +27,7 @@ public class KMTronic implements AutoCloseable {
 
   public DeviceStatus getRelayStatus(int deviceId) throws IOException {
     os.write(new byte[] { START_MARKER_BYTE, (byte) (DEVICE_NUMBER_BASE + deviceId), (byte) 0x00 });
+    os.flush();
     final int expectedResponseSize = STATUS_MESSAGE_HEADER_SIZE + NUMBER_OF_RELAYS_IN_MESSAGE;
     ByteBuffer bb = ByteBuffer.allocate(expectedResponseSize);
     int bytesRead = 0;
